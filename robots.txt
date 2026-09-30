@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kakikata-printmaker-jp.pages.dev/sitemap.xml
+Sitemap: https://kakikata-printmaker-jp-ewz.pages.dev/sitemap.xml
