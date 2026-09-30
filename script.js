@@ -447,8 +447,103 @@ function renderWorksheetToCanvas() {
     });
 }
 
+// CanvasをData URLにせずBlobへ変換する（iPadのメモリ消費を抑える）
+function canvasToPngBlob(canvas) {
+    return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => {
+            if (blob) {
+                resolve(blob);
+            } else {
+                reject(new Error('PNG画像を作成できませんでした。'));
+            }
+        }, 'image/png');
+    });
+}
+
+function isIPadOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = url;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    // Safariが保存を開始する前にURLを破棄しないよう、十分待ってから解放する
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+function showIPadSaveDialog(blob, filename) {
+    const oldDialog = document.getElementById('image-save-dialog');
+    if (oldDialog) oldDialog.remove();
+
+    const file = new File([blob], filename, { type: 'image/png' });
+    const previewUrl = URL.createObjectURL(blob);
+    const dialog = document.createElement('div');
+    dialog.id = 'image-save-dialog';
+    dialog.className = 'save-dialog-overlay';
+    dialog.innerHTML = `
+        <div class="save-dialog" role="dialog" aria-modal="true" aria-labelledby="save-dialog-title">
+            <h2 id="save-dialog-title">画像ができました</h2>
+            <p>「保存・共有」を押し、<strong>“ファイルに保存”</strong> または <strong>“画像を保存”</strong> を選んでください。</p>
+            <img class="save-preview" alt="作成した練習プリントのプレビュー">
+            <div class="save-dialog-actions">
+                <button type="button" class="save-share-btn">保存・共有</button>
+                <button type="button" class="save-open-btn">画像を表示</button>
+                <button type="button" class="save-close-btn">閉じる</button>
+            </div>
+            <p class="save-status" aria-live="polite"></p>
+        </div>`;
+
+    const preview = dialog.querySelector('.save-preview');
+    const status = dialog.querySelector('.save-status');
+    preview.src = previewUrl;
+
+    const closeDialog = () => {
+        URL.revokeObjectURL(previewUrl);
+        dialog.remove();
+    };
+
+    dialog.querySelector('.save-share-btn').addEventListener('click', async () => {
+        try {
+            if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+                await navigator.share({ files: [file], title: filename });
+                status.textContent = '保存・共有画面を開きました。';
+            } else {
+                downloadBlob(blob, filename);
+                status.textContent = 'ダウンロードを開始しました。';
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error('共有エラー:', err);
+                status.textContent = '共有できませんでした。「画像を表示」から長押しして保存してください。';
+            }
+        }
+    });
+
+    dialog.querySelector('.save-open-btn').addEventListener('click', () => {
+        const imageWindow = window.open(previewUrl, '_blank');
+        if (!imageWindow) {
+            status.textContent = 'プレビュー画像を長押しして「写真に保存」を選んでください。';
+        }
+    });
+    dialog.querySelector('.save-close-btn').addEventListener('click', closeDialog);
+    dialog.addEventListener('click', event => {
+        if (event.target === dialog) closeDialog();
+    });
+
+    document.body.appendChild(dialog);
+    dialog.querySelector('.save-share-btn').focus();
+}
+
 // Image Export (PNG)
-function exportImage() {
+async function exportImage() {
     let target = targetCharSelect.value;
     let mode = getCurrentMode() === 'katakana' ? 'カタカナ' : 'ひらがな';
     let filename = mode + '_' + target + '_れんしゅう.png';
@@ -458,19 +553,24 @@ function exportImage() {
     btn.textContent = '⏳ 画像を作成中...';
     btn.disabled = true;
 
-    renderWorksheetToCanvas().then(canvas => {
-        let link = document.createElement('a');
-        link.download = filename;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+    try {
+        const canvas = await renderWorksheetToCanvas();
+        const blob = await canvasToPngBlob(canvas);
+
+        if (isIPadOS()) {
+            showIPadSaveDialog(blob, filename);
+        } else {
+            downloadBlob(blob, filename);
+        }
+
         btn.textContent = originalText;
         btn.disabled = false;
-    }).catch(err => {
+    } catch (err) {
         console.error('画像エクスポートエラー:', err);
         alert('画像の作成に失敗しました。もう一度お試しください。');
         btn.textContent = originalText;
         btn.disabled = false;
-    });
+    }
 }
 
 // 印刷（PNG画像経由、失敗時はwindow.print()にフォールバック）

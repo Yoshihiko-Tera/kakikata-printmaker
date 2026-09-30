@@ -9,6 +9,78 @@
     --grid-size: 70px; 
 }
 
+/* iPad向け画像保存ダイアログ */
+.save-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.62);
+    -webkit-overflow-scrolling: touch;
+}
+
+.save-dialog {
+    width: min(620px, 100%);
+    max-height: calc(100vh - 40px);
+    max-height: calc(100dvh - 40px);
+    overflow: auto;
+    padding: 22px;
+    border-radius: 18px;
+    background: #fff;
+    color: #333;
+    text-align: center;
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.3);
+}
+
+.save-dialog h2 {
+    margin: 0 0 10px;
+}
+
+.save-dialog p {
+    line-height: 1.6;
+}
+
+.save-preview {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    max-height: 42vh;
+    margin: 16px auto;
+    border: 1px solid #ccc;
+    background: #fff;
+    object-fit: contain;
+    -webkit-touch-callout: default;
+}
+
+.save-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.save-dialog-actions button {
+    min-height: 48px;
+    padding: 10px 18px;
+    font-size: 16px;
+    touch-action: manipulation;
+}
+
+.save-share-btn {
+    background: #1976d2;
+    color: #fff;
+}
+
+.save-status {
+    min-height: 1.6em;
+    margin-bottom: 0;
+    color: #b33;
+    font-weight: bold;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -619,4 +691,3 @@ video#live-video {
         min-height: auto;
     }
 }
-
