@@ -3,7 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ひらがな・カタカナ れんしゅうプリント作成ツール</title>
+    <title>ひらがな・カタカナ練習プリントメーカー｜無料で作成・保存</title>
+    <meta name="description" content="ひらがな・カタカナの書き方練習プリントを無料で作成できるWebアプリです。文字、マス目、なぞり書き、単語イラストを選び、PNG保存や印刷ができます。">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://kakikata-printmaker-jp.pages.dev/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ja_JP">
+    <meta property="og:site_name" content="もじれんしゅうプリントメーカー">
+    <meta property="og:title" content="ひらがな・カタカナ練習プリントメーカー">
+    <meta property="og:description" content="文字やマス目を選んで、書き方練習プリントを無料で作成・保存・印刷できます。">
+    <meta property="og:url" content="https://kakikata-printmaker-jp.pages.dev/">
+    <meta name="twitter:card" content="summary">
+    <meta name="theme-color" content="#1976d2">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://kakikata-printmaker-jp.pages.dev/#website",
+          "url": "https://kakikata-printmaker-jp.pages.dev/",
+          "name": "もじれんしゅうプリントメーカー",
+          "inLanguage": "ja"
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://kakikata-printmaker-jp.pages.dev/#app",
+          "url": "https://kakikata-printmaker-jp.pages.dev/",
+          "name": "ひらがな・カタカナ練習プリントメーカー",
+          "description": "ひらがな・カタカナの書き方練習プリントを無料で作成、PNG保存、印刷できるWebアプリです。",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "Web",
+          "browserRequirements": "JavaScriptを有効にしたモダンブラウザ",
+          "inLanguage": "ja",
+          "isAccessibleForFree": true
+        }
+      ]
+    }
+    </script>
     <!-- Use Google Fonts for textbook-like appearance -->
     <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -16,6 +53,7 @@
     <div id="control-panel" class="no-print">
         <button id="mobile-close-btn" onclick="toggleMobileSettings()" style="display:none;">✕ 設定を閉じる</button>
         <h1 class="app-title">✏️ もじれんしゅう<br>プリントメーカー</h1>
+        <p class="app-description">ひらがな・カタカナの書き方練習プリントを無料で作成。文字やマス目、なぞり書きを選び、画像保存または印刷できます。</p>
         <h2>プリント設定</h2>
         
         <div class="control-group">

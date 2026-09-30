@@ -81,6 +81,17 @@
     font-weight: bold;
 }
 
+.app-description {
+    margin: 0 0 18px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: #eef6ff;
+    color: #334;
+    font-size: 14px;
+    line-height: 1.65;
+    text-align: left;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
